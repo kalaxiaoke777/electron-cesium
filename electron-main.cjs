@@ -1,3 +1,16 @@
+// 热重载，仅开发环境生效
+if (process.env.NODE_ENV === "development") {
+  require("electron-reload")(__dirname, {
+    electron: require("path").join(
+      __dirname,
+      "node_modules",
+      ".bin",
+      "electron"
+    ),
+    ignored: /dist|node_modules|[\\/]\\./,
+  });
+}
+
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
@@ -10,6 +23,10 @@ function createWindow() {
       contextIsolation: true,
     },
   });
+
+  // 移除顶部菜单栏
+  win.setMenu(null);
+  win.webContents.openDevTools(); // 自动打开调试工具
 
   // 开发环境加载 Vite 本地服务器，生产环境加载打包后的 index.html
   if (process.env.NODE_ENV === "development") {
